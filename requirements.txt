@@ -3,3 +3,4 @@ Gunicorn
 pandas
 bs4
 requests
+openpyxl
