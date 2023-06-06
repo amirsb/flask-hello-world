@@ -88,32 +88,26 @@ def writeNews(AN : Agency, Ban = r"ban.xlsx"):
 
 @app.route('/')
 def hello_world():
+    # -------------------------------------------------------
+    fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
+    fars.getLatestNews('li','media py-3 border-bottom align-items-start')
+    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href'}}
+    fars.processNews(DCT)
+    writeNews(fars)
+    # ------------------------------------------------------
+    mehr = Agency('مهر', 'https://www.mehrnews.com', 'Housing', r'/service/Economy/Construction-Housing')
+    mehr.getLatestNews('li', 'news')
+    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href'}}
+    mehr.processNews(DCT)
+    writeNews(mehr)
+    # ------------------------------------------------------
     tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
     tasnim.getLatestNews('article', 'list-item')
     DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href'}}
     tasnim.processNews(DCT)
     writeNews(tasnim)
+    # -------------------------------------------------------
     return ':)'
 
 
-# -------------------------------------------------------
 
-
-#fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
-#fars.getLatestNews('li','media py-3 border-bottom align-items-start')
-#DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href'}}
-#fars.processNews(DCT)
-#writeNews(fars)
-# ------------------------------------------------------
-#mehr = Agency('مهر', 'https://www.mehrnews.com', 'Housing', r'/service/Economy/Construction-Housing')
-#mehr.getLatestNews('li', 'news')
-#DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href'}}
-#mehr.processNews(DCT)
-#writeNews(mehr)
-# ------------------------------------------------------
-tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
-tasnim.getLatestNews('article', 'list-item')
-DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href'}}
-tasnim.processNews(DCT)
-writeNews(tasnim)
-# -------------------------------------------------------
