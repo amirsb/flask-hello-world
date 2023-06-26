@@ -14,6 +14,17 @@ def check_keywords(keywords, text):
             return True
     return False
 
+def find_matching_subjects(text, df):
+    matching_subjects = []
+    keywords = df['keyword'].tolist()
+    subjects = df['subject'].tolist()
+    
+    for keyword, subject in zip(keywords, subjects):
+        if keyword in text:
+            matching_subjects.append(subject)
+    
+    return matching_subjects
+
 class Agency:
     def __init__(self, name, link, group, path) -> None:
         self.name = name
@@ -22,14 +33,14 @@ class Agency:
         self.path = path
         self.latestNews = []
         self.processedNews = []
-
+    
     def getLatestNews(self, cls, cname):
         site = requests.get(self.link + self.path)
         holder = BeautifulSoup(site.text, 'html.parser')
         self.latestNews = holder.find_all(cls, {'class':cname})
-
+    
     def processNews(self, DCT: dict):
-
+        
         for n in self.latestNews:
             try:
                 header = eval('n.' + str(DCT['header']) +'.text')
@@ -52,18 +63,20 @@ class News:
         self.link = link
         self.agency = agency
         self.tags = []
-
+        
     def show(self):
         print(self.header)
         print(self.abstract)
         print(self.link)
         print(self.Jdate)
 
-def writeNews(AN : Agency, Ban = r"ban.xlsx"):
-    conn = sqlite3.connect(r"NEWS.db")
+def writeNews(AN : Agency,keyw  = r'keywords.xlsx' , Ban = r"G:\Andishkade\Rasad Project\ban.xlsx"):
+    conn = sqlite3.connect(r"G:\Andishkade\Rasad Project\NEWS.db")
     df = pd.DataFrame(columns=['date', 'header', 'abstract', 'link', 'Jdate', 'agency', 'group'])
     ban = pd.read_excel(Ban)
     ban = list(ban.keywords)
+    tagKeys = pd.read_excel(keyw)
+
     b = 0
     for N in AN.processedNews:
         cursor = conn.cursor()
@@ -77,11 +90,18 @@ def writeNews(AN : Agency, Ban = r"ban.xlsx"):
                 b = b + 1
                 pass
             else:
+                tags = find_matching_subjects( N.header + '\n' + N.abstract.lstrip() ,tagKeys)
+                tags = list(set(tags))
+                lines = N.abstract.splitlines()
+                stripped_lines = list(filter(None, lines))
+                stripped_text = "\n".join(stripped_lines)
                 df.loc[len(df.index)] = [datetime.datetime.now(), N.header, N.abstract, N.link, N.Jdate, N.agency, N.group]
-                MSG = "[" + N.header +"]("+ N.link +")" + '\n' + N.abstract.lstrip() + '\n *' + N.agency + '*'
+                MSG = "[" + N.header +"]("+ N.link +")" + '\n' + stripped_text.lstrip() + '\n *' + N.agency + '*'
+                for t in tags:
+                    MSG = MSG + '\n' + urllib.parse.quote('#' + str(t).replace(" ", "_"))
+                    
                 url = "https://tapi.bale.ai/bot627950531:TboLj8qu6VUgfj2AUDidwP1XcUd6Ki3iG8ZZCE3A/sendMessage?chat_id=5535395281" + "&text={}".format(MSG)
                 requests.get(url)
-    print(b)
     df.to_sql('news', conn, index=False, if_exists='append')
     conn.close()
     pass
