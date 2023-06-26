@@ -3,6 +3,7 @@ import sqlite3
 import datetime
 import requests
 import pandas as pd
+import urllib.parse
 from bs4 import BeautifulSoup
 
 
