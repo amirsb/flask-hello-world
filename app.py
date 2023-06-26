@@ -70,7 +70,7 @@ class News:
         print(self.link)
         print(self.Jdate)
 
-def writeNews(AN : Agency,keyw  = r'keywords.xlsx' , Ban = r"G:\Andishkade\Rasad Project\ban.xlsx"):
+def writeNews(AN : Agency,keyw  = r'keywords.xlsx' , Ban = r"ban.xlsx"):
     conn = sqlite3.connect(r"G:\Andishkade\Rasad Project\NEWS.db")
     df = pd.DataFrame(columns=['date', 'header', 'abstract', 'link', 'Jdate', 'agency', 'group'])
     ban = pd.read_excel(Ban)
