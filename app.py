@@ -5,6 +5,8 @@ import requests
 import pandas as pd
 import urllib.parse
 from bs4 import BeautifulSoup
+import warnings
+warnings.filterwarnings("ignore")
 
 
 app = Flask(__name__)
@@ -36,24 +38,48 @@ class Agency:
         self.processedNews = []
     
     def getLatestNews(self, cls, cname):
-        site = requests.get(self.link + self.path)
+        site = requests.get(self.link + self.path, verify=False)
         holder = BeautifulSoup(site.text, 'html.parser')
         self.latestNews = holder.find_all(cls, {'class':cname})
     
-    def processNews(self, DCT: dict):
-        
+    def processNews(self, DCT: dict, genral = False, descriptive = True, debug = False):
+        if genral:
+            Allow = pd.read_excel(r"allow.xlsx")
+            allow = list(Allow.keywords)
         for n in self.latestNews:
             try:
-                header = eval('n.' + str(DCT['header']) +'.text')
-                abstract = eval('n.' + str(DCT['abstract']) +'.text')
-                Jdate = eval('n.' + str(DCT['Jdate']) +'.text')
-                link = n.find_all(DCT['link']['tag'],{'class':DCT['link']['class']})[0].get_attribute_list(DCT['link']['prop'])[0]
-                news = News(self.name, self.group, header, abstract, self.link + link, Jdate)
-                self.processedNews.append(news)
-            except:
-                pass
+                if descriptive:
+                    header = eval('n.' + str(DCT['header']) +'.text').strip().replace("\n", "")
+                    abstract = eval('n.' + str(DCT['abstract']) +'.text').strip().replace("\n", "")
+                    try:
+                        Jdate = eval('n.' + str(DCT['Jdate']) +'.text')
+                    except AttributeError  as e:
+                        Jdate = datetime.date.today().strftime("%Y-%m-%d")
+                    link = n.find_all(DCT['link']['tag'],{'class':DCT['link']['class']})[0].get_attribute_list(DCT['link']['prop'])[0]
+                else:
+                    header = n.find_all(DCT['header']['tag'])[DCT['header']['num']].text
+                    abstract = n.find_all(DCT['abstract']['tag'])[DCT['abstract']['num']].text
+                    try:
+                        Jdate = n.find_all(DCT['Jdate']['tag'])[DCT['Jdate']['num']].text
+                    except AttributeError  as e:
+                        Jdate = datetime.date.today().strftime("%Y-%m-%d")
+                    link = n.find_all(DCT['link']['tag'],{'class':DCT['link']['class']})[0].get_attribute_list(DCT['link']['prop'])[0]
 
+                if not DCT['link']['full']:
+                    link = self.link + link    
 
+                news = News(self.name, self.group, header, abstract, link, Jdate)
+
+                if genral:
+                    if check_keywords(allow,news.abstract) or check_keywords(allow,news.header):
+                        self.processedNews.append(news)
+                else:
+                    self.processedNews.append(news)
+
+                
+            except Exception as e:
+                if debug:
+                    print("An error occurred : ", str(e))
 
 class News:
     def __init__(self, agency, group, header, abstract, link, Jdate) -> None:
@@ -71,7 +97,7 @@ class News:
         print(self.link)
         print(self.Jdate)
 
-def writeNews(AN : Agency,keyw  = r'keywords.xlsx' , Ban = r"ban.xlsx"):
+def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
     conn = sqlite3.connect(r"NEWS.db")
     df = pd.DataFrame(columns=['date', 'header', 'abstract', 'link', 'Jdate', 'agency', 'group'])
     ban = pd.read_excel(Ban)
@@ -103,32 +129,79 @@ def writeNews(AN : Agency,keyw  = r'keywords.xlsx' , Ban = r"ban.xlsx"):
                     
                 url = "https://tapi.bale.ai/bot627950531:TboLj8qu6VUgfj2AUDidwP1XcUd6Ki3iG8ZZCE3A/sendMessage?chat_id=5535395281" + "&text={}".format(MSG)
                 requests.get(url)
+                
     df.to_sql('news', conn, index=False, if_exists='append')
     conn.close()
     pass
 
+
 @app.route('/')
 def hello_world():
+    # 1 -------------------------------------------------------
+    try:
+        fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
+        fars.getLatestNews('li','media py-3 border-bottom align-items-start')
+        DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href', 'full': False}}
+        fars.processNews(DCT)
+        writeNews(fars)
+    except Exception as e:
+        pass
+    # 2 -------------------------------------------------------
+    try:
+        mehr = Agency('مهر', 'https://www.mehrnews.com', 'Housing', r'/service/Economy/Construction-Housing')
+        mehr.getLatestNews('li', 'news')
+        DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+        mehr.processNews(DCT)
+        writeNews(mehr)
+    except Exception as e:
+        pass
+    # 3 -------------------------------------------------------
+    try:
+        tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
+        tasnim.getLatestNews('article', 'list-item')
+        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+        tasnim.processNews(DCT)
+        writeNews(tasnim)
+    except Exception as e:
+        pass
+    # 4 -------------------------------------------------------
+    try:
+        masireqtesad = Agency('مسیر اقتصاد', 'https://masireqtesad.ir', 'Housing', r'/category/groups/housing/')
+        masireqtesad.getLatestNews("div", "col-lg-12 col-md-12 col-sm-12 col-xs-12 end_posts dot")
+        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': True}}
+        masireqtesad.processNews(DCT)
+        writeNews(masireqtesad)
+    except Exception as e:
+        pass
+    # 5 -------------------------------------------------------
+    try:
+        majles = Agency('خبرگزاری مجلس شورای اسلامی', 'https://www.icana.ir', 'Housing', r'/Fa/Service/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF%DB%8C')
+        majles.getLatestNews("div", "row NewsListMarginBottom NewsListPaddingRight")
+        DCT = {'Jdate': {'tag':'div', 'num': 5}, 'header': {'tag':'div', 'num': 6}, 'abstract': {'tag':'div', 'num': 7}, 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': True}}
+        majles.processNews(DCT, genral = True, descriptive = False, debug= True)
+        writeNews(majles)
+    except Exception as e:
+        pass
+    # 6 -------------------------------------------------------
+    try:
+        mrud = Agency('وزارت راه و شهرسازی', 'http://news.mrud.ir', 'Housing', r'/service/مسکن%20و%20شهرسازی')
+        mrud.getLatestNews("li", "text")
+        DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+        mrud.processNews(DCT)
+        writeNews(mrud)
+    except Exception as e:
+        pass
+    # 7 -------------------------------------------------------
+    try:
+        donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
+        donyayeqtesad.getLatestNews("li", "service-special")
+        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'div.div', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+        donyayeqtesad.processNews(DCT)
+        writeNews(donyayeqtesad)
+    except Exception as e:
+        pass
     # -------------------------------------------------------
-    fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
-    fars.getLatestNews('li','media py-3 border-bottom align-items-start')
-    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href'}}
-    fars.processNews(DCT)
-    writeNews(fars)
-    # ------------------------------------------------------
-    mehr = Agency('مهر', 'https://www.mehrnews.com', 'Housing', r'/service/Economy/Construction-Housing')
-    mehr.getLatestNews('li', 'news')
-    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href'}}
-    mehr.processNews(DCT)
-    writeNews(mehr)
-    # ------------------------------------------------------
-    tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
-    tasnim.getLatestNews('article', 'list-item')
-    DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href'}}
-    tasnim.processNews(DCT)
-    writeNews(tasnim)
-    # -------------------------------------------------------
-    return ':)'
+    return 'https://ble.ir/mt_rasad'
 
 
 
