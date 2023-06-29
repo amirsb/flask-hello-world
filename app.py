@@ -72,11 +72,12 @@ class Agency:
 
                 if genral:
                     if check_keywords(allow,news.abstract) or check_keywords(allow,news.header):
-                        self.processedNews.append(news)
+                        if news.header != "":
+                            self.processedNews.append(news)
                 else:
-                    self.processedNews.append(news)
+                    if news.header != "":
+                        self.processedNews.append(news)
 
-                
             except Exception as e:
                 if debug:
                     print("An error occurred : ", str(e))
