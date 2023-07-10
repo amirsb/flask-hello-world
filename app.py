@@ -136,6 +136,35 @@ def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
     pass
 
 
+def table_to_json():
+    # Connect to the SQLite database
+    conn = sqlite3.connect(r"NEWS.db")
+    cursor = conn.cursor()
+
+    # Execute a query to retrieve the table contents
+    cursor.execute('SELECT * FROM news')
+    rows = cursor.fetchall()
+
+    # Get the column names
+    columns = [desc[0] for desc in cursor.description]
+
+    # Convert the data to a list of dictionaries
+    data = []
+    for row in rows:
+        data.append(dict(zip(columns, row)))
+
+    # Close the database connection
+    cursor.close()
+    conn.close()
+
+    # Convert the data to JSON
+    json_data = json.dumps(data)
+
+    # Return the JSON response
+    return jsonify(json_data)
+
+
+
 @app.route('/')
 def hello_world():
     # 1 -------------------------------------------------------
@@ -202,7 +231,10 @@ def hello_world():
     except Exception as e:
         pass
     # -------------------------------------------------------
-    return 'https://ble.ir/mt_rasad'
+
+    db = table_to_json()
+    
+    return db
 
 
 
