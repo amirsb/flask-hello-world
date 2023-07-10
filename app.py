@@ -135,7 +135,7 @@ def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
     conn.close()
     pass
 
-
+@app.route('/table_to_json')
 def table_to_json():
     # Connect to the SQLite database
     conn = sqlite3.connect(r"NEWS.db")
