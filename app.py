@@ -213,14 +213,14 @@ def hello_world():
     except Exception as e:
         pass
     # 6 -------------------------------------------------------
-    try:
-        mrud = Agency('وزارت راه و شهرسازی', 'http://news.mrud.ir', 'Housing', r'/service/مسکن%20و%20شهرسازی')
-        mrud.getLatestNews("li", "text")
-        DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
-        mrud.processNews(DCT)
-        writeNews(mrud)
-    except Exception as e:
-        pass
+    #try:
+    #    mrud = Agency('وزارت راه و شهرسازی', 'http://news.mrud.ir', 'Housing', r'/service/مسکن%20و%20شهرسازی')
+    #    mrud.getLatestNews("li", "text")
+    #    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+    #    mrud.processNews(DCT)
+    #    writeNews(mrud)
+    #except Exception as e:
+    #    pass
     # 7 -------------------------------------------------------
     try:
         donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
