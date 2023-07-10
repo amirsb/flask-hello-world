@@ -4,3 +4,5 @@ pandas
 bs4
 requests
 openpyxl
+jsonify
+json
