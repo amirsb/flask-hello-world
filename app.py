@@ -159,7 +159,7 @@ def table_to_json():
     conn.close()
 
     # Convert the data to JSON
-    json_data = json.dumps(data, ensure_ascii=False, indent=4))
+    json_data = json.dumps(data, ensure_ascii=False, indent=4)
 
     # Return the JSON response
     return jsonify(json_data)
