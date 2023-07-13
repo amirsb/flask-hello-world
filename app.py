@@ -140,25 +140,17 @@ def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
 
 @app.route('/table_to_json')
 def table_to_json():
-    # Connect to the SQLite database
     conn = sqlite3.connect(r"NEWS.db")
     cursor = conn.cursor()
-
-    # Execute a query to retrieve the table contents
     cursor.execute('SELECT * FROM news')
     rows = cursor.fetchall()
-
-    # Get the column names
-    columns = [desc[0] for desc in cursor.description]
-
-    # Convert the data to a list of dictionaries
-    data = []
-    for row in rows:
-        data.append(dict(zip(columns, row)))
-
-    # Close the database connection
     cursor.close()
     conn.close()
+
+    json_data = []
+    for row in rows:
+        json_data.append(dict(zip([column[0] for column in cursor.description], row)))
+
 
     # Convert the data to JSON
     json_data = json.dumps(data, ensure_ascii=False, indent=4)
@@ -228,14 +220,14 @@ def hello_world():
     #except Exception as e:
     #    pass
     # 7 -------------------------------------------------------
-    try:
-        donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
-        donyayeqtesad.getLatestNews("li", "service-special")
-        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'div.div', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
-        donyayeqtesad.processNews(DCT)
-        writeNews(donyayeqtesad)
-    except Exception as e:
-        pass
+    #try:
+    #    donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
+    #    donyayeqtesad.getLatestNews("li", "service-special")
+    #    DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'div.div', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+    #    donyayeqtesad.processNews(DCT)
+    #    writeNews(donyayeqtesad)
+    #except Exception as e:
+    #    pass
     # -------------------------------------------------------
 
     db = table_to_json()
