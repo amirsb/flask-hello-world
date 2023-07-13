@@ -6,11 +6,13 @@ import requests
 import pandas as pd
 import urllib.parse
 from bs4 import BeautifulSoup
+from flask_cors import CORS
 import warnings
 warnings.filterwarnings("ignore")
 
 
 app = Flask(__name__)
+CORS(app)
 
 def check_keywords(keywords, text):
     for keyword in keywords:
@@ -162,7 +164,10 @@ def table_to_json():
     json_data = json.dumps(data, ensure_ascii=False, indent=4)
 
     # Return the JSON response
-    return jsonify(json_data)
+    response = jsonify(json_data)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    
+    return response
 
 
 
