@@ -174,14 +174,14 @@ def table_to_json():
 @app.route('/')
 def hello_world():
     # 1 -------------------------------------------------------
-    try:
-        fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
-        fars.getLatestNews('li','media py-3 border-bottom align-items-start')
-        DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href', 'full': False}}
-        fars.processNews(DCT)
-        writeNews(fars)
-    except Exception as e:
-        pass
+    #try:
+    #    fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
+    #    fars.getLatestNews('li','media py-3 border-bottom align-items-start')
+    #    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href', 'full': False}}
+    #    fars.processNews(DCT)
+    #    writeNews(fars)
+    #except Exception as e:
+    #    pass
     # 2 -------------------------------------------------------
     try:
         mehr = Agency('مهر', 'https://www.mehrnews.com', 'Housing', r'/service/Economy/Construction-Housing')
@@ -192,14 +192,14 @@ def hello_world():
     except Exception as e:
         pass
     # 3 -------------------------------------------------------
-    try:
-        tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
-        tasnim.getLatestNews('article', 'list-item')
-        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
-        tasnim.processNews(DCT)
-        writeNews(tasnim)
-    except Exception as e:
-        pass
+    #try:
+    #    tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
+    #    tasnim.getLatestNews('article', 'list-item')
+    #    DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+    #    tasnim.processNews(DCT)
+    #    writeNews(tasnim)
+    #except Exception as e:
+    #    pass
     # 4 -------------------------------------------------------
     try:
         masireqtesad = Agency('مسیر اقتصاد', 'https://masireqtesad.ir', 'Housing', r'/category/groups/housing/')
@@ -210,14 +210,14 @@ def hello_world():
     except Exception as e:
         pass
     # 5 -------------------------------------------------------
-    try:
-        majles = Agency('خبرگزاری مجلس شورای اسلامی', 'https://www.icana.ir', 'Housing', r'/Fa/Service/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF%DB%8C')
-        majles.getLatestNews("div", "row NewsListMarginBottom NewsListPaddingRight")
-        DCT = {'Jdate': {'tag':'div', 'num': 5}, 'header': {'tag':'div', 'num': 6}, 'abstract': {'tag':'div', 'num': 7}, 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': True}}
-        majles.processNews(DCT, genral = True, descriptive = False, debug= True)
-        writeNews(majles)
-    except Exception as e:
-        pass
+    #try:
+    #    majles = Agency('خبرگزاری مجلس شورای اسلامی', 'https://www.icana.ir', 'Housing', r'/Fa/Service/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF%DB%8C')
+    #    majles.getLatestNews("div", "row NewsListMarginBottom NewsListPaddingRight")
+    #    DCT = {'Jdate': {'tag':'div', 'num': 5}, 'header': {'tag':'div', 'num': 6}, 'abstract': {'tag':'div', 'num': 7}, 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': True}}
+    #    majles.processNews(DCT, genral = True, descriptive = False, debug= True)
+    #    writeNews(majles)
+    #except Exception as e:
+    #    pass
     # 6 -------------------------------------------------------
     #try:
     #    mrud = Agency('وزارت راه و شهرسازی', 'http://news.mrud.ir', 'Housing', r'/service/مسکن%20و%20شهرسازی')
