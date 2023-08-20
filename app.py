@@ -1,5 +1,5 @@
 import json
-from flask import Flask, jsonify
+from flask import Flask, Response
 import sqlite3
 import datetime
 import requests
@@ -140,7 +140,7 @@ def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
     pass
 
 @app.route('/table_to_json')
-def table_to_json():
+def table_to_csv():
     
     conn = sqlite3.connect(r"NEWS.db")
     query = "SELECT * FROM news"
@@ -159,7 +159,7 @@ def table_to_json():
 
 
 @app.route('/')
-def hello_world():
+def main():
     # 1 -------------------------------------------------------
     try:
         fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
