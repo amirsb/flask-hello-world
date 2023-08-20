@@ -154,8 +154,7 @@ def table_to_json():
     response = Response(csv_data, content_type='text/csv')
     response.headers.add('Content-Disposition', 'attachment; filename=data.csv')
     response.headers.add('Access-Control-Allow-Origin', '*')
-
-return response
+    return response
 
 
 
