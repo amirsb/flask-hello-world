@@ -145,14 +145,17 @@ def table_to_json():
     conn = sqlite3.connect(r"NEWS.db")
     query = "SELECT * FROM news"
     # Read the specific columns into a DataFrame
-    selected_columns_df = pd.read_sql_query(query, conn)
+    df = pd.read_sql_query(query, conn)
     # Close the database connection
     conn.close()
-    json_data = selected_columns_df.to_json(orient="records", encoding="utf-8")
-    response = jsonify(json_data)
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    csv_data = df.to_csv(index=False)
     
-    return response
+    # Create a response with CSV data and appropriate headers
+    response = Response(csv_data, content_type='text/csv')
+    response.headers.add('Content-Disposition', 'attachment; filename=data.csv')
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+return response
 
 
 
