@@ -148,7 +148,7 @@ def table_to_json():
     selected_columns_df = pd.read_sql_query(query, conn)
     # Close the database connection
     conn.close()
-    json_data = selected_columns_df.to_json("output.json", orient="records")
+    json_data = selected_columns_df.to_json(orient="records")
     response = jsonify(json_data)
     response.headers.add('Access-Control-Allow-Origin', '*')
     
@@ -159,14 +159,14 @@ def table_to_json():
 @app.route('/')
 def hello_world():
     # 1 -------------------------------------------------------
-    #try:
-    #    fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
-    #    fars.getLatestNews('li','media py-3 border-bottom align-items-start')
-    #    DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href', 'full': False}}
-    #    fars.processNews(DCT)
-    #    writeNews(fars)
-    #except Exception as e:
-    #    pass
+    try:
+        fars = Agency('فارس', 'https://www.farsnews.ir', 'Housing', r'/economy/civil')
+        fars.getLatestNews('li','media py-3 border-bottom align-items-start')
+        DCT = {'Jdate': 'time', 'header': 'h3', 'abstract': 'p', 'link': {'tag':'a', 'class': 'd-flex flex-column h-100 justify-content-between', 'prop':'href', 'full': False}}
+        fars.processNews(DCT)
+        writeNews(fars)
+    except Exception as e:
+        pass
     # 2 -------------------------------------------------------
     try:
         mehr = Agency('مهر', 'https://www.mehrnews.com', 'Housing', r'/service/Economy/Construction-Housing')
@@ -177,14 +177,14 @@ def hello_world():
     except Exception as e:
         pass
     # 3 -------------------------------------------------------
-    #try:
-    #    tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
-    #    tasnim.getLatestNews('article', 'list-item')
-    #    DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
-    #    tasnim.processNews(DCT)
-    #    writeNews(tasnim)
-    #except Exception as e:
-    #    pass
+    try:
+        tasnim = Agency('تسنیم', 'https://www.tasnimnews.com', 'Housing', r'/fa/service/81/%D8%B1%D8%A7%D9%87-%D9%88-%D9%85%D8%B3%DA%A9%D9%86')
+        tasnim.getLatestNews('article', 'list-item')
+        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'h4', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+        tasnim.processNews(DCT)
+        writeNews(tasnim)
+    except Exception as e:
+        pass
     # 4 -------------------------------------------------------
     try:
         masireqtesad = Agency('مسیر اقتصاد', 'https://masireqtesad.ir', 'Housing', r'/category/groups/housing/')
@@ -212,20 +212,20 @@ def hello_world():
     #    writeNews(mrud)
     #except Exception as e:
     #    pass
-    # 7 -------------------------------------------------------
-    #try:
-    #    donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
-    #    donyayeqtesad.getLatestNews("li", "service-special")
-    #    DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'div.div', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
-    #    donyayeqtesad.processNews(DCT)
-    #    writeNews(donyayeqtesad)
-    #except Exception as e:
-    #    pass
+     7 -------------------------------------------------------
+    try:
+        donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
+        donyayeqtesad.getLatestNews("li", "service-special")
+        DCT = {'Jdate': 'time', 'header': 'h2', 'abstract': 'div.div', 'link': {'tag':'a', 'class': '', 'prop':'href', 'full': False}}
+        donyayeqtesad.processNews(DCT)
+        writeNews(donyayeqtesad)
+    except Exception as e:
+        pass
     # -------------------------------------------------------
 
-    db = table_to_json()
+    #db = table_to_json()
     
-    return db
+    return 'Please visit the channel.'
 
 
 
