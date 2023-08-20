@@ -131,7 +131,8 @@ def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
                 for t in tags:
                     MSG = MSG + '\n' + urllib.parse.quote('#' + str(t).replace(" ", "_"))
                     
-                url = "https://tapi.bale.ai/bot627950531:TboLj8qu6VUgfj2AUDidwP1XcUd6Ki3iG8ZZCE3A/sendMessage?chat_id=5535395281" + "&text={}".format(MSG)
+                #url = "https://tapi.bale.ai/bot627950531:TboLj8qu6VUgfj2AUDidwP1XcUd6Ki3iG8ZZCE3A/sendMessage?chat_id=5535395281" + "&text={}".format(MSG)
+                url = "https://tapi.bale.ai/bot627950531:TboLj8qu6VUgfj2AUDidwP1XcUd6Ki3iG8ZZCE3A/sendMessage?chat_id=6268195694" + "&text={}".format(MSG)
                 requests.get(url)
                 
     df.to_sql('news', conn, index=False, if_exists='append')
@@ -140,22 +141,14 @@ def writeNews(AN : Agency, keyw = r'keywords.xlsx' , Ban = r"ban.xlsx"):
 
 @app.route('/table_to_json')
 def table_to_json():
+    
     conn = sqlite3.connect(r"NEWS.db")
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM news')
-    rows = cursor.fetchall()
-    cursor.close()
+    query = "SELECT * FROM news"
+    # Read the specific columns into a DataFrame
+    selected_columns_df = pd.read_sql_query(query, conn)
+    # Close the database connection
     conn.close()
-
-    json_data = []
-    for row in rows:
-        json_data.append(dict(zip([column[0] for column in cursor.description], row)))
-
-
-    # Convert the data to JSON
-    json_data = json.dumps(json_data, ensure_ascii=False, indent=4)
-
-    # Return the JSON response
+    json_data = selected_columns_df.to_json("output.json", orient="records")
     response = jsonify(json_data)
     response.headers.add('Access-Control-Allow-Origin', '*')
     
