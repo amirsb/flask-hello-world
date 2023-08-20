@@ -212,7 +212,7 @@ def hello_world():
     #    writeNews(mrud)
     #except Exception as e:
     #    pass
-     7 -------------------------------------------------------
+    # 7 -------------------------------------------------------
     try:
         donyayeqtesad = Agency('دنیای اقتصاد', 'https://donya-e-eqtesad.com', 'Housing', r'/بخش-مسکن-عمران-18')
         donyayeqtesad.getLatestNews("li", "service-special")
