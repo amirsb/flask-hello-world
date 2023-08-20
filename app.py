@@ -148,7 +148,7 @@ def table_to_json():
     selected_columns_df = pd.read_sql_query(query, conn)
     # Close the database connection
     conn.close()
-    json_data = selected_columns_df.to_json(orient="records")
+    json_data = selected_columns_df.to_json(orient="records", encoding="utf-8")
     response = jsonify(json_data)
     response.headers.add('Access-Control-Allow-Origin', '*')
     
